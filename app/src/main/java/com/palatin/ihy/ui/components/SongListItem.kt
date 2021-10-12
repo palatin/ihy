@@ -1,15 +1,17 @@
 package com.palatin.ihy.ui.components
 
+import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -18,42 +20,40 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.UiMode
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import coil.ImageLoader
+import coil.compose.ImagePainter
+import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
-import coil.size.Precision
 import coil.size.Scale
-import com.google.accompanist.coil.rememberCoilPainter
 import com.palatin.ihy.R
 import com.palatin.ihy.ui.screens.main.Song
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 
 @Composable
-fun SongDetail(song: Song) {
+fun SongListItem(song: Song) {
     Row(modifier = Modifier
         .fillMaxWidth()
-        .height(IntrinsicSize.Min),
+        .height(IntrinsicSize.Min)
+        .clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = rememberRipple(bounded = false),
+            onClick = {}
+        )
+        .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        DetailSongThumbnail(thumbnail = song.thumbnail)
+        SongItemThumbnail(thumbnail = song.thumbnail)
         SongDescription(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 16.dp)
             ,
-            title = "123",
-            subtitle = "123"
+            title = song.name.takeIf { it.isNotBlank() } ?: "Unnamed",
+            subtitle = song.author ?: "Unknown artist"
         )
         Text(
             modifier = Modifier
@@ -71,31 +71,32 @@ fun SongDetail(song: Song) {
 
 
 @Composable
-fun DetailSongThumbnail(
+fun SongItemThumbnail(
     modifier: Modifier = Modifier,
+    shape: Shape = RoundedCornerShape(12.dp),
     thumbnail: String?
 ) {
     val color = MaterialTheme.colors.primary.copy(alpha = 0.2f)
+    val painter = rememberImagePainter(
+        thumbnail,
+        builder = {
+            placeholder(R.drawable.ic_baseline_search_24)
+            error(R.drawable.ic_baseline_search_24)
+            scale(Scale.FILL)
+        }
+    )
+
     Image(
-        painter = rememberCoilPainter(
-            thumbnail ?: R.drawable.ic_baseline_search_24,
-            previewPlaceholder = R.drawable.ic_baseline_search_24,
-        ),
+        painter = painter,
         contentDescription = null,
         modifier = modifier
             .fillMaxHeight()
             .aspectRatio(1f, true)
-            .drawWithCache {
-                onDrawBehind {
-                    // drawing here rather than background to know the size of card
-                    drawRoundRect(
-                        color = color,
-                        cornerRadius = CornerRadius(this.drawContext.size.height / 3f)
-                    )
-                }
-            }
-            .padding(10.dp)
+            .clip(shape)
+            .background(color)
+            .padding(if (painter.state !is ImagePainter.State.Success) 8.dp else 0.dp) // whenever we have placeholder - add padding to see the shape
     )
+
 
 }
 
@@ -128,7 +129,13 @@ private fun SongDetailPreview() {
     Box(
         Modifier
             .fillMaxWidth()
-            .requiredHeight(80.dp)) {
-        SongDetail(song = Song("", null, ""))
+            .height(IntrinsicSize.Min)
+            .background(Color.White)
+    ) {
+        SongListItem(song = Song("",
+            thumbnail = null,
+            imageUri = "",
+            durationMillis = 2000
+        ))
     }
 }
