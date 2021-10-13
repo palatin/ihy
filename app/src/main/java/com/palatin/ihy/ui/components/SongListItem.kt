@@ -1,6 +1,5 @@
 package com.palatin.ihy.ui.components
 
-import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,30 +16,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.UiMode
 import androidx.compose.ui.unit.dp
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
-import coil.request.ImageRequest
-import coil.size.Scale
 import com.palatin.ihy.R
-import com.palatin.ihy.ui.screens.main.Song
+import com.palatin.ihy.ui.data.Song
 
 @Composable
-fun SongListItem(song: Song) {
-    Row(modifier = Modifier
+fun SongListItem(modifier: Modifier = Modifier, song: Song) {
+    Row(modifier = modifier
         .fillMaxWidth()
         .height(IntrinsicSize.Min)
         .clickable(
             interactionSource = remember { MutableInteractionSource() },
-            indication = rememberRipple(bounded = false),
+            indication = rememberRipple(bounded = true),
             onClick = {}
         )
         .padding(vertical = 8.dp),
@@ -53,7 +47,7 @@ fun SongListItem(song: Song) {
                 .padding(horizontal = 16.dp)
             ,
             title = song.name.takeIf { it.isNotBlank() } ?: "Unnamed",
-            subtitle = song.author ?: "Unknown artist"
+            subtitle = song.artist ?: "Unknown artist"
         )
         Text(
             modifier = Modifier
@@ -82,7 +76,6 @@ fun SongItemThumbnail(
         builder = {
             placeholder(R.drawable.ic_baseline_search_24)
             error(R.drawable.ic_baseline_search_24)
-            scale(Scale.FILL)
         }
     )
 
@@ -94,7 +87,8 @@ fun SongItemThumbnail(
             .aspectRatio(1f, true)
             .clip(shape)
             .background(color)
-            .padding(if (painter.state !is ImagePainter.State.Success) 8.dp else 0.dp) // whenever we have placeholder - add padding to see the shape
+            .padding(if (painter.state !is ImagePainter.State.Success) 8.dp else 0.dp), // whenever we have placeholder - add padding to see the shape
+        contentScale = ContentScale.Crop
     )
 
 
@@ -136,6 +130,7 @@ private fun SongDetailPreview() {
             thumbnail = null,
             imageUri = "",
             durationMillis = 2000
-        ))
+        )
+        )
     }
 }
