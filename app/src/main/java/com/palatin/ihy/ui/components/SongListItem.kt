@@ -20,7 +20,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
@@ -28,7 +32,7 @@ import com.palatin.ihy.R
 import com.palatin.ihy.ui.data.Song
 
 @Composable
-fun SongListItem(modifier: Modifier = Modifier, song: Song) {
+fun SongListItem(modifier: Modifier = Modifier, paddingHorizontal: Dp = 16.dp, song: Song) {
     Row(modifier = modifier
         .fillMaxWidth()
         .height(IntrinsicSize.Min)
@@ -37,7 +41,7 @@ fun SongListItem(modifier: Modifier = Modifier, song: Song) {
             indication = rememberRipple(bounded = true),
             onClick = {}
         )
-        .padding(vertical = 8.dp),
+        .padding(vertical = 8.dp, horizontal = paddingHorizontal),
         verticalAlignment = Alignment.CenterVertically
     ) {
         SongItemThumbnail(thumbnail = song.thumbnail)
@@ -72,12 +76,13 @@ fun SongItemThumbnail(
 ) {
     val color = MaterialTheme.colors.primary.copy(alpha = 0.2f)
     val painter = rememberImagePainter(
-        thumbnail,
+        thumbnail ?: "",
         builder = {
             placeholder(R.drawable.ic_baseline_search_24)
             error(R.drawable.ic_baseline_search_24)
         }
     )
+
 
     Image(
         painter = painter,
@@ -105,14 +110,19 @@ fun SongDescription(modifier: Modifier = Modifier,
                 .fillMaxWidth()
                 .wrapContentHeight(),
             text = title,
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.subtitle1,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
         Text(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(),
             text = subtitle,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.subtitle1,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
