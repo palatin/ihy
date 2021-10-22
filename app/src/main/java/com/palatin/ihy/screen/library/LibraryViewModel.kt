@@ -1,8 +1,8 @@
-package com.palatin.ihy.ui.screens.main
+package com.palatin.ihy.screen.library
 
 import androidx.lifecycle.ViewModel
-import com.palatin.ihy.ui.data.GroupedSongs
-import com.palatin.ihy.ui.data.Song
+import com.palatin.ihy.data.model.GroupedSongs
+import com.palatin.ihy.data.model.Song
 
 class LibraryViewModel : ViewModel() {
 }

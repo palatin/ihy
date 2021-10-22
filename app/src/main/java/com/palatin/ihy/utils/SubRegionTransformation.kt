@@ -1,4 +1,4 @@
-package com.palatin.ihy.ui.utils
+package com.palatin.ihy.utils
 
 import android.graphics.Bitmap
 import coil.bitmap.BitmapPool

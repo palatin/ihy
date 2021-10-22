@@ -1,4 +1,4 @@
-package com.palatin.ihy.ui.components
+package com.palatin.ihy.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,12 +24,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.palatin.ihy.R
-import com.palatin.ihy.ui.data.Song
+import com.palatin.ihy.data.model.Song
 
 @Composable
 fun SongListItem(modifier: Modifier = Modifier, paddingHorizontal: Dp = 16.dp, song: Song) {
@@ -44,14 +43,14 @@ fun SongListItem(modifier: Modifier = Modifier, paddingHorizontal: Dp = 16.dp, s
         .padding(vertical = 8.dp, horizontal = paddingHorizontal),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SongItemThumbnail(thumbnail = song.thumbnail)
+        SongItemThumbnail(thumbnail = song.coverUri)
         SongDescription(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 16.dp)
             ,
-            title = song.name.takeIf { it.isNotBlank() } ?: "Unnamed",
-            subtitle = song.artist ?: "Unknown artist"
+            title = song.title.takeIf { it.isNotBlank() } ?: "Unnamed",
+            subtitle = song.artistName ?: "Unknown artist"
         )
         Text(
             modifier = Modifier
@@ -136,11 +135,10 @@ private fun SongDetailPreview() {
             .height(IntrinsicSize.Min)
             .background(Color.White)
     ) {
-        SongListItem(song = Song("",
-            thumbnail = null,
-            imageUri = "",
-            durationMillis = 2000
-        )
-        )
+        SongListItem(song = Song(0,"",
+            coverUri = null,
+            durationMillis = 2000,
+            artistId = 0
+        ))
     }
 }

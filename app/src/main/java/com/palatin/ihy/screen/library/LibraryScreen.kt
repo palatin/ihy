@@ -1,5 +1,8 @@
-package com.palatin.ihy.ui.screens.main
+package com.palatin.ihy.screen.library
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,23 +10,28 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.palatin.ihy.ui.components.ContentCard
-import com.palatin.ihy.ui.components.SearchView
-import com.palatin.ihy.ui.components.SongListItem
-import com.palatin.ihy.ui.data.GroupedSongs
-import com.palatin.ihy.ui.data.Song
-import com.palatin.ihy.ui.theme.Typography
+import com.palatin.ihy.components.ContentCard
+import com.palatin.ihy.components.SearchView
+import com.palatin.ihy.components.SongListItem
+import com.palatin.ihy.data.datasource.song.local.MediaStoreSongDataSource
+import com.palatin.ihy.data.model.GroupedSongs
+import com.palatin.ihy.data.repository.song.RealSongRepository
+import com.palatin.ihy.theme.Typography
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun LibraryScreen(
@@ -75,7 +83,7 @@ fun LibraryScreen(
         items(state.songs) { song ->
             SongListItem(
                 song = song,
-                modifier = Modifier.padding(horizontal = paddingHorizontal)
+                paddingHorizontal = paddingHorizontal
             )
         }
     }
@@ -108,7 +116,9 @@ fun GroupedSongs(
             if (groups.isNotEmpty()) {
                 items(groups) { item ->
                     ContentCard(
-                        title = item.name, modifier = Modifier
+                        title = item.name,
+                        backgroundUri = item.image,
+                        modifier = Modifier
                             .fillMaxHeight()
                             .requiredWidth(itemWidth)
                     )
@@ -136,14 +146,19 @@ fun GroupedSongs(
 @Preview(name = "Library light preview", device = Devices.PIXEL)
 @Composable
 private fun LibraryPreview() {
+
+    val context = LocalContext.current
+    val songs = remember {
+        runBlocking {
+            RealSongRepository(MediaStoreSongDataSource(context.contentResolver)).getAllSongs().first()
+        }
+    }
     LibraryScreen(
         state = LibraryViewState(
             groups = listOf(
-                GroupedSongs.Album("Album 1", listOf(), null),
-                GroupedSongs.Album("Album 1", listOf(), null),
-                GroupedSongs.Album("Album 1", listOf(), null)
+                GroupedSongs.Album("Album 1", listOf(), songs.first().coverUri)
             ),
-            songs = listOf()
+            songs = songs
         )
     )
 }

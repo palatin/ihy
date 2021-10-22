@@ -1,4 +1,4 @@
-package com.palatin.ihy.ui.theme
+package com.palatin.ihy.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

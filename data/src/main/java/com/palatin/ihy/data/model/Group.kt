@@ -1,4 +1,4 @@
-package com.palatin.ihy.ui.data
+package com.palatin.ihy.data.model
 
 
 sealed class GroupedSongs {
