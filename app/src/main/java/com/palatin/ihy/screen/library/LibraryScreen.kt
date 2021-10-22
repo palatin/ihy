@@ -4,6 +4,7 @@ import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -27,7 +28,9 @@ import com.palatin.ihy.components.SearchView
 import com.palatin.ihy.components.SongListItem
 import com.palatin.ihy.data.datasource.song.local.MediaStoreSongDataSource
 import com.palatin.ihy.data.model.GroupedSongs
+import com.palatin.ihy.data.model.Song
 import com.palatin.ihy.data.repository.song.RealSongRepository
+import com.palatin.ihy.theme.IhyTheme
 import com.palatin.ihy.theme.Typography
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.first
@@ -105,13 +108,15 @@ fun GroupedSongs(
         .fillMaxWidth()
         .aspectRatio(1.7f)) {
 
+        val itemSpace = 16.dp
         // todo calculate also inner padding that used to make shadow inside Content card
-        val itemWidth = maxWidth.minus(contentPadding).div(visibleItems)
+        val itemWidth = maxWidth.minus(contentPadding + itemSpace.div(2)).div(visibleItems)
 
         LazyRow(
             modifier = Modifier
                 .fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = contentPadding)
+            contentPadding = PaddingValues(horizontal = contentPadding),
+            horizontalArrangement = Arrangement.spacedBy(itemSpace)
         ) {
             if (groups.isNotEmpty()) {
                 items(groups) { item ->
@@ -148,17 +153,27 @@ fun GroupedSongs(
 private fun LibraryPreview() {
 
     val context = LocalContext.current
-    val songs = remember {
-        runBlocking {
-            RealSongRepository(MediaStoreSongDataSource(context.contentResolver)).getAllSongs().first()
-        }
-    }
-    LibraryScreen(
-        state = LibraryViewState(
-            groups = listOf(
-                GroupedSongs.Album("Album 1", listOf(), songs.first().coverUri)
-            ),
-            songs = songs
+    val songs = listOf(Song(
+        id = 0,
+        title = "Song 1",
+        coverUri = ""
+    ), Song(
+        id = 1,
+        title = "Song 2",
+        coverUri = null
+    ))
+
+    IhyTheme {
+        LibraryScreen(
+            state = LibraryViewState(
+                groups = listOf(
+                    GroupedSongs.Album("Album 1", listOf(), songs.first().coverUri),
+                    GroupedSongs.Album("Album 2", listOf(), ""),
+                    GroupedSongs.Album("Album 3", listOf(), null)
+                    ),
+                songs = songs
+            )
         )
-    )
+    }
+
 }

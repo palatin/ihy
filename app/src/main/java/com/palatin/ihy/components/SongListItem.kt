@@ -10,6 +10,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -29,6 +30,7 @@ import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.palatin.ihy.R
 import com.palatin.ihy.data.model.Song
+import com.palatin.ihy.theme.IhyTheme
 
 @Composable
 fun SongListItem(modifier: Modifier = Modifier, paddingHorizontal: Dp = 16.dp, song: Song) {
@@ -73,12 +75,13 @@ fun SongItemThumbnail(
     shape: Shape = RoundedCornerShape(12.dp),
     thumbnail: String?
 ) {
-    val color = MaterialTheme.colors.primary.copy(alpha = 0.2f)
+    val color = MaterialTheme.colors.surface
+
     val painter = rememberImagePainter(
         thumbnail ?: "",
         builder = {
-            placeholder(R.drawable.ic_baseline_search_24)
-            error(R.drawable.ic_baseline_search_24)
+            placeholder(R.drawable.ic_baseline_audiotrack_24)
+            error(R.drawable.ic_baseline_audiotrack_24)
         }
     )
 
@@ -129,16 +132,20 @@ fun SongDescription(modifier: Modifier = Modifier,
 @Preview
 @Composable
 private fun SongDetailPreview() {
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min)
-            .background(Color.White)
-    ) {
-        SongListItem(song = Song(0,"",
-            coverUri = null,
-            durationMillis = 2000,
-            artistId = 0
-        ))
+
+    IhyTheme {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+                .background(Color.White)
+        ) {
+            SongListItem(song = Song(0,"",
+                coverUri = null,
+                durationMillis = 2000,
+                artistId = 0
+            ))
+        }
     }
+
 }
