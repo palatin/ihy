@@ -39,8 +39,18 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun LibraryScreen(
     modifier: Modifier = Modifier,
-    state: LibraryViewState,
+    viewModel: LibraryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
 ) {
+    val state = viewModel.state
+    LibraryContent(modifier = modifier, state = state)
+}
+
+@Composable
+private fun LibraryContent(
+    modifier: Modifier = Modifier,
+    state: LibraryViewState
+) {
+
     val paddingHorizontal = remember {
         16.dp
     }
@@ -147,7 +157,6 @@ fun GroupedSongs(
     }
 }
 
-
 @Preview(name = "Library light preview", device = Devices.PIXEL)
 @Composable
 private fun LibraryPreview() {
@@ -164,7 +173,7 @@ private fun LibraryPreview() {
     ))
 
     IhyTheme {
-        LibraryScreen(
+        LibraryContent(
             state = LibraryViewState(
                 groups = listOf(
                     GroupedSongs.Album("Album 1", listOf(), songs.first().coverUri),
