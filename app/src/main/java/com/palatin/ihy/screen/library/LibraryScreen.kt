@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.palatin.ihy.R
 import com.palatin.ihy.components.ContentCard
+import com.palatin.ihy.components.PermissionResolver
 import com.palatin.ihy.components.SearchView
 import com.palatin.ihy.components.SongListItem
 import com.palatin.ihy.data.model.GroupedSongs
@@ -40,6 +41,16 @@ fun LibraryScreen(
     viewModel: LibraryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
 ) {
     val state = viewModel.state
+
+    val requiredPermissions = remember {
+        setOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
+
+    PermissionResolver(
+        permissions = requiredPermissions
+    ) {
+
+    }
     LibraryContent(modifier = modifier, state = state)
 }
 
@@ -172,6 +183,7 @@ private fun LibraryPreview() {
     ))
 
     IhyTheme {
+
         LibraryContent(
             state = LibraryViewState(
                 groups = listOf(
