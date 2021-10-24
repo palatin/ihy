@@ -1,6 +1,7 @@
 package com.palatin.ihy.components
 
 import android.graphics.ColorSpace
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,16 +19,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import coil.transform.BlurTransformation
+import com.palatin.ihy.R
 import com.palatin.ihy.theme.Grey
 
+/**
+ * Draws card with [backgroundUri] content & [ContentScale.Crop] or
+ * fallbacks to [fallbackDrawable] & [ContentScale.FillWidth]
+ *
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ContentCard(
     modifier: Modifier = Modifier,
     title: String,
     backgroundUri: String? = null,
+    @DrawableRes fallbackDrawable: Int? = null,
     shape: Shape = RoundedCornerShape(20.dp),
 ) {
 
@@ -39,16 +48,21 @@ fun ContentCard(
         backgroundColor = Grey,
         elevation = 16.dp
     ) {
-
+        val painter = rememberImagePainter(
+            data = backgroundUri,
+            builder = {
+                fallbackDrawable?.let {
+                    fallback(it)
+                }
+            }
+        )
         Image(
-            painter = rememberImagePainter(
-                data = backgroundUri
-            ),
+            painter = painter,
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colors.surface),
-            contentScale = ContentScale.Crop
+            contentScale = if(painter.state is ImagePainter.State.Success) ContentScale.Crop else ContentScale.FillWidth
         )
         BoxWithConstraints {
 

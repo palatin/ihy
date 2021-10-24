@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -23,18 +25,14 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.palatin.ihy.R
 import com.palatin.ihy.components.ContentCard
 import com.palatin.ihy.components.SearchView
 import com.palatin.ihy.components.SongListItem
-import com.palatin.ihy.data.datasource.song.local.MediaStoreSongDataSource
 import com.palatin.ihy.data.model.GroupedSongs
 import com.palatin.ihy.data.model.Song
-import com.palatin.ihy.data.repository.song.RealSongRepository
 import com.palatin.ihy.theme.IhyTheme
 import com.palatin.ihy.theme.Typography
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
 @Composable
 fun LibraryScreen(
@@ -133,6 +131,7 @@ fun GroupedSongs(
                     ContentCard(
                         title = item.name,
                         backgroundUri = item.image,
+                        fallbackDrawable = R.drawable.ic_baseline_album_24,
                         modifier = Modifier
                             .fillMaxHeight()
                             .requiredWidth(itemWidth)
@@ -165,7 +164,7 @@ private fun LibraryPreview() {
     val songs = listOf(Song(
         id = 0,
         title = "Song 1",
-        coverUri = ""
+        coverUri = "https://m.media-amazon.com/images/M/MV5BMjUxMzE4ZDctODNjMS00MzIwLThjNDktODkwYjc5YWU0MDc0XkEyXkFqcGdeQXVyNjc3OTE4Nzk@._V1_.jpg"
     ), Song(
         id = 1,
         title = "Song 2",
@@ -177,7 +176,7 @@ private fun LibraryPreview() {
             state = LibraryViewState(
                 groups = listOf(
                     GroupedSongs.Album("Album 1", listOf(), songs.first().coverUri),
-                    GroupedSongs.Album("Album 2", listOf(), ""),
+                    GroupedSongs.Album("Album 2", listOf(), "https://upload.wikimedia.org/wikipedia/ru/1/16/Rammstein_-_Rammstein.png"),
                     GroupedSongs.Album("Album 3", listOf(), null)
                     ),
                 songs = songs
