@@ -11,8 +11,9 @@ import com.palatin.ihy.data.ext.getStringOrNull
 import com.palatin.ihy.data.model.Song
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import javax.inject.Inject
 
-class RealSongRepository(
+class RealSongRepository @Inject constructor(
     private val localMediaSongDataSource: SongDataSource
 ) : SongRepository {
 

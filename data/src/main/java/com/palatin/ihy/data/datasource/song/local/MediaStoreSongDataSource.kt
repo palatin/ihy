@@ -10,11 +10,12 @@ import com.palatin.ihy.data.ext.getStringOrNull
 import com.palatin.ihy.data.model.Song
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import javax.inject.Inject
 
 /**
  * Uses [android.provider.MediaStore] to fetch the list of songs
  */
-class MediaStoreSongDataSource(
+class MediaStoreSongDataSource @Inject constructor(
     private val contentResolver: ContentResolver
 ) : SongDataSource {
 
