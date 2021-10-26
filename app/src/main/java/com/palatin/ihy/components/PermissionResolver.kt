@@ -3,8 +3,10 @@ package com.palatin.ihy.components
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 
@@ -18,8 +20,12 @@ fun PermissionResolver(
     result: (PermissionsStatus) -> Unit
 ) {
     val context = LocalContext.current
+
+    val contract = remember {
+        ActivityResultContracts.RequestMultiplePermissions()
+    }
     val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        contract = contract,
         onResult = { res ->
             if (permissions.all { res[it] == true })
                 result(PermissionsStatus.Granted)
@@ -29,6 +35,7 @@ fun PermissionResolver(
         })
 
     LaunchedEffect(key1 = permissions) {
+
         if (permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
             result(PermissionsStatus.WereGranted)
         }

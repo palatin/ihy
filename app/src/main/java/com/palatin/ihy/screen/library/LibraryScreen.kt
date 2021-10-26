@@ -38,9 +38,10 @@ import com.palatin.ihy.theme.Typography
 @Composable
 fun LibraryScreen(
     modifier: Modifier = Modifier,
-    viewModel: LibraryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    viewModel: LibraryViewModel,
 ) {
     val state = viewModel.state
+
 
     val requiredPermissions = remember {
         setOf(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -51,7 +52,9 @@ fun LibraryScreen(
     ) {
 
     }
+
     LibraryContent(modifier = modifier, state = state)
+
 }
 
 @Composable
@@ -175,7 +178,7 @@ private fun LibraryPreview() {
     val songs = listOf(Song(
         id = 0,
         title = "Song 1",
-        coverUri = "https://m.media-amazon.com/images/M/MV5BMjUxMzE4ZDctODNjMS00MzIwLThjNDktODkwYjc5YWU0MDc0XkEyXkFqcGdeQXVyNjc3OTE4Nzk@._V1_.jpg"
+        coverUri = ""
     ), Song(
         id = 1,
         title = "Song 2",
@@ -188,7 +191,7 @@ private fun LibraryPreview() {
             state = LibraryViewState(
                 groups = listOf(
                     GroupedSongs.Album("Album 1", listOf(), songs.first().coverUri),
-                    GroupedSongs.Album("Album 2", listOf(), "https://upload.wikimedia.org/wikipedia/ru/1/16/Rammstein_-_Rammstein.png"),
+                    GroupedSongs.Album("Album 2", listOf(), ""),
                     GroupedSongs.Album("Album 3", listOf(), null)
                     ),
                 songs = songs

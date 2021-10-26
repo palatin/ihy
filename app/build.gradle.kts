@@ -1,6 +1,10 @@
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
+
 }
 
 android {
@@ -49,6 +53,8 @@ android {
     }
 }
 
+
+
 dependencies {
 
     implementation(project(":data"))
@@ -62,8 +68,16 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     implementation("androidx.activity:activity-compose:1.4.0-beta01")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-rc01")
+    implementation(Dependencies.HILT)
+    kapt(Dependencies.HILT_COMPILER)
+
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.extra["compose_version"]}")
+}
+
+kapt {
+    correctErrorTypes = true
 }
