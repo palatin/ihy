@@ -7,7 +7,9 @@ import android.os.Build
 import android.provider.MediaStore
 import com.palatin.ihy.data.datasource.song.SongDataSource
 import com.palatin.ihy.data.ext.getStringOrNull
+import com.palatin.ihy.data.model.Album
 import com.palatin.ihy.data.model.Song
+import com.palatin.ihy.data.util.getMediaStoreCoverUri
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
@@ -20,7 +22,8 @@ class MediaStoreSongDataSource @Inject constructor(
 ) : SongDataSource {
 
 
-    override fun getAllSongs(): Flow<List<Song>> {
+
+    override fun getAllSongs(): List<Song> {
         val collection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
         } else {
@@ -52,13 +55,13 @@ class MediaStoreSongDataSource @Inject constructor(
                     val albumId = cursor.getLong(cursor.getColumnIndexOrThrow(projection[3]))
                         songs.add(
                             Song(
-                                id = cursor.getLong(cursor.getColumnIndexOrThrow(projection[0])),
+                                id = cursor.getLong(cursor.getColumnIndexOrThrow(projection[0])).toString(),
                                 title = cursor.getString(cursor.getColumnIndexOrThrow(projection[1])),
                                 coverUri = getMediaStoreCoverUri(albumId).toString(),
                                 durationMillis = cursor.getLong(cursor.getColumnIndexOrThrow(projection[2])),
-                                albumId = albumId,
+                                albumId = albumId.toString(),
                                 albumName = cursor.getStringOrNull(cursor.getColumnIndex(projection[4])),
-                                artistId = cursor.getLong(cursor.getColumnIndexOrThrow(projection[5])),
+                                artistId = cursor.getLong(cursor.getColumnIndexOrThrow(projection[5])).toString(),
                                 artistName = cursor.getStringOrNull(cursor.getColumnIndex(projection[6]))
                             )
                         )
@@ -66,11 +69,8 @@ class MediaStoreSongDataSource @Inject constructor(
             }
         }
 
-        return flowOf(songs)
-    }
 
-    private fun getMediaStoreCoverUri(albumId: Long): Uri {
-        return ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId)
+        return songs
     }
 
 }

@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface SongDataSource {
 
-    fun getAllSongs(): Flow<List<Song>>
+    fun getAllSongs(): List<Song>
 
 }
