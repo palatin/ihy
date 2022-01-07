@@ -30,6 +30,8 @@ import com.palatin.ihy.components.ContentCard
 import com.palatin.ihy.components.PermissionResolver
 import com.palatin.ihy.components.SearchView
 import com.palatin.ihy.components.SongListItem
+import com.palatin.ihy.data.model.Album
+import com.palatin.ihy.data.model.AlbumGroup
 import com.palatin.ihy.data.model.GroupedSongs
 import com.palatin.ihy.data.model.Song
 import com.palatin.ihy.theme.IhyTheme
@@ -122,7 +124,7 @@ private fun LibraryContent(
 @Composable
 fun GroupedSongs(
     modifier: Modifier = Modifier,
-    groups: List<GroupedSongs>,
+    groups: List<Album>,
     visibleItems: Float = 2.3f,
     contentPadding: Dp = 16.dp,
 ) {
@@ -176,11 +178,11 @@ private fun LibraryPreview() {
 
     val context = LocalContext.current
     val songs = listOf(Song(
-        id = 0,
+        id = "0",
         title = "Song 1",
         coverUri = ""
     ), Song(
-        id = 1,
+        id = "1",
         title = "Song 2",
         coverUri = null
     ))
@@ -190,9 +192,9 @@ private fun LibraryPreview() {
         LibraryContent(
             state = LibraryViewState(
                 groups = listOf(
-                    GroupedSongs.Album("Album 1", listOf(), songs.first().coverUri),
-                    GroupedSongs.Album("Album 2", listOf(), ""),
-                    GroupedSongs.Album("Album 3", listOf(), null)
+                    Album("id1", "Album 1", null, 10, songs.first().coverUri),
+                    Album("id2", "Album 2", null, 10, ""),
+                    Album("id1", "Album 3", null, 10, null)
                     ),
                 songs = songs
             )

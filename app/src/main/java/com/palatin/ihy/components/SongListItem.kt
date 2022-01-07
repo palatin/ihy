@@ -140,10 +140,9 @@ private fun SongDetailPreview() {
                 .height(IntrinsicSize.Min)
                 .background(Color.White)
         ) {
-            SongListItem(song = Song(0,"",
+            SongListItem(song = Song("0","",
                 coverUri = null,
-                durationMillis = 2000,
-                artistId = 0
+                durationMillis = 2000
             ))
         }
     }
